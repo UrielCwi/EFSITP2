@@ -11,7 +11,7 @@ function AgregarTODO(){
         id: iterador,
         informacion: document.getElementById("informacion").value,
         tachado: false,
-        fechaAñadida: Date.now(),
+        fechaAñadida: new Date(),
         fechaTachado: null,
     }
    // Lista += Lista2;
@@ -22,14 +22,20 @@ function AgregarTODO(){
 
 function MostrarMasRapido(){
     for (let index = 0; index < Lista.length; index++) {
-        if(fechaTachado != null){
-            resta = (fechaAñadida.getTime() - Lista[index].fechaTachado.getTime());
-            if(fechaRapida == null || resta < fechaRapida || resta == null) { //si tienen fecha de tachado Y es mas rapido que el mas rapido de los anteriores, entonces remplazarlo
+            if(Lista[index].fechaTachado != null) {
+            resta = (Lista[index].fechaTachado - Lista[index].fechaAñadida);
+            if(fechaRapida == null && resta != null || resta < fechaRapida) { //si tienen fecha de tachado Y es mas rapido que el mas rapido de los anteriores, entonces remplazarlo
                 fechaRapida = resta;
-                nombreTarea = Lista[index].informacion.value;
+                nombreTarea = Lista[index].informacion;
             }
-        }
+        }   
     }         //si NO tiene fecha de tachado, entonces no cambiar nada
+    if (fechaRapida != null) {
+        document.getElementById("Fecha").innerHTML = "La tarea completada mas rapidamente fue " + nombreTarea + " con " + fechaRapida + " milisegundos";
+    }
+    else {
+        document.getElementById("Fecha").innerHTML = "No hay tareas completadas";
+    }
 }
     //si el numero sigue siendo null, entonces mandar un mensaje de que no hay tareas finalizadas
     //tene cuidado que creo que tenes que cambiar el formato de date.now()
@@ -44,15 +50,15 @@ function CrearLista(){
 
 function Iterar(item){
     if (item.tachado) {
-        ListaHTML += '<li><del>' + item.informacion + '</del></li>'
+        ListaHTML += '<li><del>' + item.informacion + '</del></li> <li>Fecha Añadido:' + item.fechaAñadida + '</li> <li>Fecha Tachado:' + item.fechaTachado + '</li>'  
     }
     else{
-        ListaHTML += '<input type="checkbox" onclick="Tachado(' + item.id + ')"></input> <li>' + item.informacion + '</li> '
+        ListaHTML += '<input type="checkbox" onclick="Tachado(' + item.id + ')"></input> <li>' + item.informacion + '</li> <li>Fecha Añadido:' + item.fechaAñadida + '</li>'
     }
 }
 
 function Tachado(id) {
     Lista[id - 1].tachado = true;
-    Lista[id - 1].fechaTachado = Date.now();
+    Lista[id - 1].fechaTachado = new Date();
     CrearLista();
 }
